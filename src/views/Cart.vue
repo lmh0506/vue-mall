@@ -122,7 +122,7 @@
                 Item total: <span class="total-price">{{totalPrice | currency('￥')}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red">Checkout</a>
+                <a class="btn btn--red" :class="{'btn--dis':checkedCount === 0}" @click="checkOut">Checkout</a>
               </div>
             </div>
           </div>
@@ -174,8 +174,6 @@
         this.cartList.forEach(item => {
           if (item.checked === '1') {
             i++
-          } else {
-            return
           }
         })
         return i
@@ -244,6 +242,11 @@
             this.$router.push('/')
           }
         })
+      },
+      checkOut () {
+        if (this.checkedCount > 0) {
+          this.$router.push('/address')
+        }
       }
     },
     mounted () {
@@ -258,8 +261,8 @@
   }
 </script>
 
-<style>
-  @import '../assets/css/base.css';
+<style scoped>
+
   @import './../assets/css/checkout.css';
 
   .input-sub,.input-add{

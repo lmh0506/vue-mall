@@ -179,7 +179,6 @@
 </script>
 
 <style scoped>
-    @import '../assets/css/base.css';
     @import '../assets/css/product.css';
 </style>
 

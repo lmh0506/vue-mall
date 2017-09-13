@@ -14,7 +14,14 @@ const userSchema = new Schema({
     checked: String,
     productNum: String
   }],
-  addressList: Array
+  addressList: [{
+    addressId : String,
+    userName : String,
+    streetName : String,
+    postCode : String,
+    tel : String,
+    isDefault : Boolean
+  }]
 })
 
 userSchema.statics = {
@@ -46,6 +53,18 @@ userSchema.statics = {
       'cartList.$.checked': productItem.checked,
     })
     .exec()
+  },
+  delAddress (userName, addressId) {
+    return this.update(
+      {userName}, 
+      {
+        $pull: {
+          'addressList': {
+            addressId
+          }
+        }
+      })
+      .exec()
   }
 }
 

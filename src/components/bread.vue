@@ -2,7 +2,7 @@
   <div class="nav-breadcrumb-wrap">
     <div class="container">
       <nav class="nav-breadcrumb">
-        <a href="/">Home</a>
+        <router-link to="/">Home</router-link>
         <slot></slot>
       </nav>
     </div>
