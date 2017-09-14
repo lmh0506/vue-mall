@@ -11,9 +11,12 @@ Vue.use(VueLazyLoad, {
   loading: '/static/loading-svg/loading-bars.svg'
 })
 
+import store from './store'
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   render: h => h(App)
 })

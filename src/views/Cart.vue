@@ -146,6 +146,7 @@
   import VBread from '../components/bread'
   import Modal from '../components/Modal'
   import {currency} from '../util/currency'
+  import {mapMutations} from 'vuex'
   import axios from 'axios'
 
   export default{
@@ -206,6 +207,8 @@
             let index = this.cartList.findIndex(item => {
               return item.productId === this.delId
             })
+            let num = this.cartList[index].productNum
+            this.updateCartCount(-num)
             this.cartList.splice(index, 1)
           }
         })
@@ -227,7 +230,13 @@
             productNum: item.productNum,
             checked: item.checked
           }).then(res => {
-            if (res.data.status === 10001) {
+            if (res.data.status === 0) {
+              if (flag === 'add') {
+                this.updateCartCount(1)
+              } else if (flag === 'minu') {
+                this.updateCartCount(-1)
+              }
+            } else if (res.data.status === 10001) {
               this.$router.push('/')
             }
           })
@@ -247,7 +256,10 @@
         if (this.checkedCount > 0) {
           this.$router.push('/address')
         }
-      }
+      },
+      ...mapMutations([
+        'updateCartCount'
+      ])
     },
     mounted () {
       this.getCartList()

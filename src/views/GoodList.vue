@@ -73,6 +73,7 @@
   import VFooter from '../components/footer'
   import VBread from '../components/bread'
   import Modal from '../components/Modal'
+  import {mapMutations} from 'vuex'
   import axios from 'axios'
   export default {
     data () {
@@ -157,6 +158,7 @@
           if (res.data.status === 0) {
             this.mdShow = true
             this.modalMsg = '加入成功'
+            this.updateCartCount(1)
           } else {
             this.$refs.header.showModal()
           }
@@ -164,7 +166,10 @@
       },
       closeModal () {
         this.mdShow = false
-      }
+      },
+      ...mapMutations([
+        'updateCartCount'
+      ])
     },
     components: {
       VHeader,

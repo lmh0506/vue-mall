@@ -20,7 +20,7 @@
           <a href="javascript:void(0)" class="navbar-link" @click="showModal" >{{nickName ? nickName : 'Login'}}</a>
           <a href="javascript:void(0)" class="navbar-link" v-show="nickName" @click="logout">Logout</a>
           <div class="navbar-cart-container">
-            <span class="navbar-cart-count"></span>
+            <span class="navbar-cart-count" v-show="cartCount > 0">{{cartCount}}</span>
             <router-link class="navbar-link navbar-cart-link" to="/cart">
               <svg class="navbar-cart-logo">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -64,6 +64,7 @@
 
 <script>
   import axios from 'axios'
+  import {mapState, mapMutations} from 'vuex'
 
   export default {
     data () {
@@ -71,9 +72,14 @@
         userName: '',
         userPwd: '',
         errorMsg: '',
-        loginModalFlag: false,
-        nickName: ''
+        loginModalFlag: false
       }
+    },
+    computed: {
+      ...mapState([
+        'nickName',
+        'cartCount'
+      ])
     },
     methods: {
       login () {
@@ -89,7 +95,8 @@
             this.errorMsg = res.data.msg
             if (this.errorMsg === '') {
               this.hideModal()
-              this.nickName = res.data.result
+              this.updateUserInfo(res.data.result)
+              this.getCartCount()
             }
           } else {
             this.errorMsg = '服务器繁忙，请稍后再试'
@@ -105,19 +112,34 @@
       logout () {
         axios.post('/users/logout').then(res => {
           if (res.data.status === 0) {
-            this.nickName = ''
+            this.updateUserInfo('')
+          }
+        })
+      },
+      ...mapMutations([
+        'updateUserInfo',
+        'initCartCount'
+      ]),
+      checkLogin () {
+        axios.get('/users/checkLogin').then(res => {
+          if (res.data.status === 0) {
+            this.updateUserInfo(res.data.result.userName)
+            this.getCartCount()
+          } else {
+            this.$router.push('/')
+          }
+        })
+      },
+      getCartCount () {
+        axios.get('/users/getCartCount').then(res => {
+          if (res.data.status === 0) {
+            this.initCartCount(res.data.result)
           }
         })
       }
     },
     mounted () {
-      axios.get('/users/checkLogin').then(res => {
-        if (res.data.status === 0) {
-          this.nickName = res.data.result.userName
-        } else {
-          this.$router.push('/')
-        }
-      })
+      this.checkLogin()
     }
   }
 </script>

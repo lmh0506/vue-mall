@@ -62,6 +62,30 @@ router.get('/checkLogin', async (ctx, next) => {
 
 router.use(middleware.loginIntercept)
 
+router.get('/getCartCount', async (ctx, next) => {
+  let userName = ctx.session.user.userName
+  try {
+    let user = await Users.findByName(userName)
+    let cartCount = 0
+    user.cartList.map(item => {
+      cartCount += parseInt(item.productNum)
+    })
+
+    ctx.body = {
+      status: 0,
+      msg: '',
+      result: cartCount
+    }
+
+  } catch (err) {
+    ctx.body = {
+      status: 1,
+      msg: err.message,
+      result: ''
+    }
+  }
+})
+
 // 查询当前用户的购物车数据
 router.get('/cartList', async (ctx, next) => {
   let userName = ctx.session.user.userName
