@@ -130,6 +130,14 @@
           <a href="javascript:;" class="btn btn--m btn--red" @click="closeModal">取消</a>
         </div>
       </modal>
+      <modal :mdShow='mdShow2' @closeModal='closeModal'>
+        <p slot="message">
+          地址列表至少需要一条数据，已无法删除
+        </p>
+        <div slot="btnGroup">
+          <a href="javascript:;" class="btn btn--m" @click="closeModal">好的</a>
+        </div>
+      </modal>
       <v-footer></v-footer>
     </div>
 </template>
@@ -147,7 +155,8 @@
         addressList: [],
         limit: 3,
         checkIndex: 0,
-        mdShow: false
+        mdShow: false,
+        mdShow2: false
       }
     },
     computed: {
@@ -201,10 +210,15 @@
       },
       closeModal () {
         this.mdShow = false
+        this.mdShow2 = false
       },
       showModal (addressId) {
-        this.mdShow = true
-        this.addressId = addressId
+        if (this.addressList.length === 1) {
+          this.mdShow2 = true
+        } else {
+          this.mdShow = true
+          this.addressId = addressId
+        }
       },
       delAddress () {
         axios.post('users/address/delete', {addressId: this.addressId})
